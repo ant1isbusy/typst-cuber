@@ -8,7 +8,7 @@
   B: "#0051BA",
   R: "#C41E3A",
   O: "#FF5800",
-  X: "#777777"
+  X: "#333333"
 )
 
 #let draw_svg_cube(state) = {
@@ -22,7 +22,7 @@
     }
   }
   
-  image(bytes(svg-data), format: "svg", width: 3cm) 
+  image(bytes(svg-data), format: "svg", width: 5cm) 
 }
 
 // only need the 3 visible faces for rendering
@@ -46,8 +46,19 @@
   draw_svg_cube(flat_to_render(current_state))
 }
 
-= Rubik's Cube Engine Test
+#let f2l(algo-string) = {
+  let current_state = F2L_CUBE
+  let moves = algo-string.split(" ").filter(m => m != "")
 
-#figure()[
-  #scramble("x2")
-]
+  for move in moves {
+    current_state = apply_move(current_state, move)
+  }
+  draw_svg_cube(flat_to_render(current_state))
+}
+
+#show heading: set align(center)
+#show heading: smallcaps
+
+= Test
+#scramble("M2 E2 S2") 
+#f2l("R U' R'")
