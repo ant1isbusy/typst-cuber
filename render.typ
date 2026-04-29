@@ -49,5 +49,5 @@
 = Rubik's Cube Engine Test
 
 #figure()[
-  #scramble("F R U R' U' F'")
+  #scramble("x2")
 ]
