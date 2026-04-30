@@ -1,5 +1,3 @@
-#import "cube.typ": *
-#set page(paper: "a4")
 
 #let colors = (
   W: "#FFFFFF",
@@ -11,7 +9,17 @@
   X: "#333333"
 )
 
-#let draw_svg_cube(state) = {
+// only need the 3 visible faces for rendering
+#let flat_to_render(flat_state) = {
+  (
+    u: flat_state.slice(0, 9),
+    r: flat_state.slice(9, 18),
+    f: flat_state.slice(18, 27),
+  )
+}
+
+#let draw_svg_cube(state, w: 3cm, h: auto) = {
+  let state = flat_to_render(state)
   let svg-data = read("cube.svg")
   
   for (face-name, pieces) in state {
@@ -22,43 +30,5 @@
     }
   }
   
-  image(bytes(svg-data), format: "svg", width: 5cm) 
+  image(bytes(svg-data), format: "svg", width: w, height: h) 
 }
-
-// only need the 3 visible faces for rendering
-#let flat_to_render(flat_state) = {
-  (
-    u: flat_state.slice(0, 9),
-    r: flat_state.slice(9, 18),
-    f: flat_state.slice(18, 27),
-  )
-}
-
-#let scramble(algo-string) = {
-  let current_state = SOLVED_CUBE
-  
-  let moves = algo-string.split(" ").filter(m => m != "")
-
-  for move in moves {
-    current_state = apply_move(current_state, move)
-  }
-
-  draw_svg_cube(flat_to_render(current_state))
-}
-
-#let f2l(algo-string) = {
-  let current_state = F2L_CUBE
-  let moves = algo-string.split(" ").filter(m => m != "")
-
-  for move in moves {
-    current_state = apply_move(current_state, move)
-  }
-  draw_svg_cube(flat_to_render(current_state))
-}
-
-#show heading: set align(center)
-#show heading: smallcaps
-
-= Test
-#scramble("M2 E2 S2") 
-#f2l("R U' R'")
