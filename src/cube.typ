@@ -349,7 +349,7 @@
 
 #let apply-move(cube-state, move-str) = {
   let base = move-str.first()
-  let is-prime = move-str.ends-with("'") or move-str.ends-with("3")
+  let is-prime = move-str.ends-with("'") or move-str.ends-with("3") or move-str.ends-with("p") // added custom 'p' suffix for user-friendly parsing of primes, since ' can be hard to type on some keyboards
   let is-double = move-str.ends-with("2")
   let is-w-wide = move-str.ends-with("w") or move-str.ends-with("W") // included capitalized w even though it's not WCA notation, more of a user-friendly option
   if is-w-wide {

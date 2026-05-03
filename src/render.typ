@@ -1,4 +1,7 @@
 
+#let CUBE-TEMPLATE = read("assets/cube.svg")
+#let LL-TEMPLATE = read("assets/LL.svg")
+
 #let colors = (
   W: "#FFFFFF",
   Y: "#FFD500",
@@ -9,7 +12,7 @@
   X: "#444444"
 )
 
-// only need the 3 visible faces for rendering
+// only need the 3 visible faces for cube
 #let flat-to-cube(flat-state) = {
   (
     u: flat-state.slice(0, 9),
@@ -17,6 +20,8 @@
     f: flat-state.slice(18, 27),
   )
 }
+
+// Only upper face and 3 on each side for LL
 #let flat-to-LL(flat-state) = {
   (
     u: flat-state.slice(0, 9),
@@ -29,7 +34,7 @@
 
 #let render-cube(state, w: 3cm, h: auto) = {
   let state = flat-to-cube(state)
-  let svg-data = read("assets/cube.svg")
+  let svg-data = CUBE-TEMPLATE
   
   for (face-name, pieces) in state {
     for (i, color-key) in pieces.enumerate() {
@@ -49,9 +54,9 @@
     "1_5", "5_7", "3_7", "1_3"  // adjacent edges
   )
 
-#let render-PLL(state, arrows: (), w: 3cm, h: auto) = {
+#let render-pll(state, arrows: (), w: 3cm, h: auto) = {
   let state = flat-to-LL(state)
-  let svg-data = read("assets/LL.svg")
+  let svg-data = LL-TEMPLATE
 
   for (face-name, pieces) in state {
     if face-name == "d" { continue }
@@ -71,9 +76,9 @@
   image(bytes(svg-data), format: "svg", width: w, height: h)
 }
 
-#let render-OLL(state, w: 3cm, h: auto) = {
+#let render-oll(state, w: 3cm, h: auto) = {
   let state = flat-to-LL(state)
-  let svg-data = read("assets/LL.svg")
+  let svg-data = LL-TEMPLATE
 
   for (face-name, pieces) in state {
     if face-name == "d" { continue }
