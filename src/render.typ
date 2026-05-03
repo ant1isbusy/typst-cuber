@@ -6,7 +6,7 @@
   B: "#0051BA",
   R: "#C41E3A",
   O: "#FF5800",
-  X: "#333333"
+  X: "#444444"
 )
 
 // only need the 3 visible faces for rendering
@@ -29,7 +29,7 @@
 
 #let render-cube(state, w: 3cm, h: auto) = {
   let state = flat-to-cube(state)
-  let svg-data = read("cube.svg")
+  let svg-data = read("assets/cube.svg")
   
   for (face-name, pieces) in state {
     for (i, color-key) in pieces.enumerate() {
@@ -42,19 +42,50 @@
   image(bytes(svg-data), format: "svg", width: w, height: h) 
 }
 
-#let render-LL(state, w: 3cm, h: auto) = {
+#let all-possible-arrows = (
+    "0_2", "6_8", "0_6", "2_8", // adjacent corners
+    "0_8", "2_6",               // diagonal corners
+    "1_7", "3_5",               // opposite edges
+    "1_5", "5_7", "3_7", "1_3"  // adjacent edges
+  )
+
+#let render-PLL(state, arrows: (), w: 3cm, h: auto) = {
   let state = flat-to-LL(state)
-  let svg-data = read("LL.svg")
+  let svg-data = read("assets/LL.svg")
 
   for (face-name, pieces) in state {
-    if face-name == "d" {
-      continue
-    }
+    if face-name == "d" { continue }
     for (i, color-key) in pieces.enumerate() {
       let placeholder = "#COLOR" + face-name + str(i)
       let hex = colors.at(color-key)
       svg-data = svg-data.replace(placeholder, hex) 
     }
+  }
+
+  for arrow-id in all-possible-arrows {
+    let placeholder = "VIS_" + arrow-id
+    let display-mode = if arrow-id in arrows { "inline" } else { "none" }
+    svg-data = svg-data.replace(placeholder, display-mode)
+  }
+
+  image(bytes(svg-data), format: "svg", width: w, height: h)
+}
+
+#let render-OLL(state, w: 3cm, h: auto) = {
+  let state = flat-to-LL(state)
+  let svg-data = read("assets/LL.svg")
+
+  for (face-name, pieces) in state {
+    if face-name == "d" { continue }
+    for (i, color-key) in pieces.enumerate() {
+      let placeholder = "#COLOR" + face-name + str(i)
+      let hex = if color-key == "Y" { colors.at(color-key) } else { colors.at("X") }
+      svg-data = svg-data.replace(placeholder, hex) 
+    }
+  }
+
+  for arrow-id in all-possible-arrows {
+    svg-data = svg-data.replace("VIS_" + arrow-id, "none")
   }
 
   image(bytes(svg-data), format: "svg", width: w, height: h)

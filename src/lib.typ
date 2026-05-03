@@ -1,35 +1,31 @@
 #import "cube.typ": apply-move, SOLVED-CUBE, FTL-CUBE
-#import "render.typ": render-cube, render-LL
+#import "render.typ": render-cube, render-PLL, render-OLL
 
-#let scramble(algo-string) = {
-  let current_state = SOLVED-CUBE
-  
+#let _process-state(state, algo-string) = {
+  let current_state = state
   let moves = algo-string.split(" ").filter(m => m != "")
 
   for move in moves {
     current_state = apply-move(current_state, move)
   }
-
-  render-cube(current_state)
+  return current_state
 }
 
-#let f2l(algo-string) = {
-  let current_state = FTL-CUBE
-  let moves = algo-string.split(" ").filter(m => m != "")
-
-  for move in moves {
-    current_state = apply-move(current_state, move)
-  }
-  render-cube(current_state)
+#let scramble(algo) = {
+  render-cube(_process-state(SOLVED-CUBE, algo))
 }
 
-#let ll(algo-string) = {
-  let current_state = SOLVED-CUBE
-  let algo-string = "x2 y2 " + algo-string //need to flip cube for LL case, otherwise white on top
-  let moves = algo-string.split(" ").filter(m => m != "")
+#let f2l(algo) = {
+  render-cube(_process-state(FTL-CUBE, algo))
+}
 
-  for move in moves {
-    current_state = apply-move(current_state, move)
-  }
-  render-LL(current_state)
+#let oll(algo) = {
+  // flip cube for yellow on top
+  let state = _process-state(SOLVED-CUBE, "x2 y2 " + algo) 
+  render-OLL(state)
+}
+
+#let pll(algo, arrows: ()) = {
+  let state = _process-state(SOLVED-CUBE, "x2 y2 " + algo)
+  render-PLL(state, arrows: arrows)
 }
