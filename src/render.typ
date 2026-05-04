@@ -21,7 +21,7 @@
   )
 }
 
-// Only upper face and 3 on each side for LL
+// only upper face and 3 on each side for LL
 #let flat-to-LL(flat-state) = {
   (
     u: flat-state.slice(0, 9),
